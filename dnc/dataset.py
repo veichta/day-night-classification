@@ -16,10 +16,11 @@ class Dataset(torch.utils.data.Dataset):
         self.data = data
 
         self.images = []
-        for i in tqdm(self.data, desc="Loading images", ncols=80):
-            img = cv2.imread(i)
+        # load images
+        for img_path in tqdm(self.data, desc="Loading images", ncols=80):
+            img = cv2.imread(img_path)
             if img is None:
-                logging.warning(f"Could not load image: {i}")
+                logging.warning(f"Could not load image: {img_path}")
                 continue
 
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -50,4 +51,4 @@ class Dataset(torch.utils.data.Dataset):
         return img, label
 
     def __len__(self):
-        return len(self.data)
+        return len(self.images)

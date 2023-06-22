@@ -13,18 +13,78 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_dir", type=str, default="data")
-    parser.add_argument("--night_images", type=str, required=True)
-    parser.add_argument("--day_images", type=str, required=True)
-    parser.add_argument("--epochs", type=int, default=50)
-    parser.add_argument("--batch_size", type=int, default=32)
-    parser.add_argument("--lr", type=float, default=1e-3)
-    parser.add_argument("--device", type=str, default="cpu")
-    parser.add_argument("--num_workers", type=int, default=2)
-    parser.add_argument("--backbone", type=str, default="resnet18")
-    parser.add_argument("--pretrained", type=bool, default=True)
-    parser.add_argument("--num_classes", type=int, default=2)
-    parser.add_argument("--model_dir", type=str, default="models")
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        default="data",
+        help="Path to data directory.",
+    )
+    parser.add_argument(
+        "--night_images",
+        type=str,
+        required=True,
+        help="Directory containing night images.",
+    )
+    parser.add_argument(
+        "--day_images",
+        type=str,
+        required=True,
+        help="Directory containing day images.",
+    )
+    parser.add_argument(
+        "--epochs",
+        type=int,
+        default=50,
+        help="Number of epochs.",
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=32,
+        help="Batch size.",
+    )
+    parser.add_argument(
+        "--lr",
+        type=float,
+        default=1e-3,
+        help="Learning rate.",
+    )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="cpu",
+        help="Device to train on.",
+    )
+    parser.add_argument(
+        "--num_workers",
+        type=int,
+        default=2,
+        help="Number of workers for data loader.",
+    )
+    parser.add_argument(
+        "--backbone",
+        type=str,
+        default="resnet18",
+        help="Backbone to use.",
+    )
+    parser.add_argument(
+        "--pretrained",
+        type=bool,
+        default=True,
+        help="Use pretrained backbone.",
+    )
+    parser.add_argument(
+        "--num_classes",
+        type=int,
+        default=2,
+        help="Number of classes.",
+    )
+    parser.add_argument(
+        "--model_dir",
+        type=str,
+        default="models",
+        help="Directory to save model.",
+    )
     return parser.parse_args()
 
 
@@ -41,8 +101,16 @@ def load_data(args: argparse.Namespace) -> Tuple[Dataset, Dataset]:
     night_data = os.listdir(os.path.join(args.data_dir, args.night_images))
     day_data = os.listdir(os.path.join(args.data_dir, args.day_images))
 
-    night_data = [os.path.join(args.data_dir, args.night_images, i) for i in night_data]
-    day_data = [os.path.join(args.data_dir, args.day_images, i) for i in day_data]
+    night_data = [
+        os.path.join(args.data_dir, args.night_images, fname)
+        for fname in night_data
+        if not os.path.isdir(fname)
+    ]
+    day_data = [
+        os.path.join(args.data_dir, args.day_images, fname)
+        for fname in day_data
+        if not os.path.isdir(fname)
+    ]
 
     data = night_data + day_data
     labels = [0] * len(night_data) + [1] * len(day_data)

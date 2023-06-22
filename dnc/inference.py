@@ -36,13 +36,7 @@ def image_to_tensor(img: np.ndarray) -> torch.Tensor:
 
     Returns:
         img (torch.Tensor): image as tensor."""
-    img = load_image(img_path)
-
-    # resize image
     img = cv2.resize(img, (224, 224))
-
-    if img is None:
-        raise ValueError(f"Failed to load image: {img_path}")
 
     # convert to tensor
     img = torch.from_numpy(img)
@@ -51,6 +45,7 @@ def image_to_tensor(img: np.ndarray) -> torch.Tensor:
     img = img / 255.0
     img = (img - MEAN) / STD
 
+    # permute from (H, W, C) to (C, H, W)
     img = img.permute(2, 0, 1)
 
     return img
@@ -84,7 +79,7 @@ def infer(
         pred = torch.softmax(pred, dim=1)
         pred = pred.squeeze(0).cpu().numpy()
 
-    return {"day": pred[0], "night": pred[1]}
+    return {"day": pred[1], "night": pred[0]}
 
 
 def infer_from_file(
