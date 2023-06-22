@@ -26,7 +26,7 @@ def main():
 
     # Collect images
     for file in os.listdir(data_dir):
-        if file == "night" or file == "day":
+        if file in {"night", "day"}:
             continue
 
         if os.path.isdir(data_dir / file):

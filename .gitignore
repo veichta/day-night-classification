@@ -4,6 +4,9 @@ Makefile
 
 **.DS_Store
 secrets.json
+sjob.sbatch
+
+scripts/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
