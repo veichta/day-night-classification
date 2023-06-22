@@ -1,0 +1,6 @@
+flickrapi
+pandas
+numpy
+torch
+torchvision
+opencv
