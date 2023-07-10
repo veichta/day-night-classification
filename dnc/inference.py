@@ -75,7 +75,7 @@ def infer(
     model.eval()
     model.to(device)
     with torch.no_grad():
-        pred = model(img.unsqueeze(0))
+        pred = model(img.unsqueeze(0).to(device))
         pred = torch.softmax(pred, dim=1)
         pred = pred.squeeze(0).cpu().numpy()
 
